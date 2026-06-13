@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Framememora — Frame Your Memory Forever | Cream & Gold</title>
+  <meta name="description" content="Bespoke wedding & event websites in cream & gold. Live in 3 days, zero effort from you. RSVP, galleries, hosting included.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ---------- TOKENS (cream & gold) ---------- */
+    :root {
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Jost', sans-serif;
+      --gold: #C9A055;
+      --gold-deep: #B2863A;
+      --gold-light: #E4CF9F;
+      --cream-bg: #FFFCF6;
+      --cream-card: #FFFFFF;
+      --cream-warm: #FEF9EF;
+      --stone: #2C2418;
+      --stone-soft: #4A3F30;
+      --stone-muted: #7C6E5A;
+      --border-light: rgba(201,160,85,0.2);
+      --border-gold: rgba(201,160,85,0.45);
+      --shadow-sm: 0 12px 28px -8px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.02);
+      --shadow-md: 0 20px 32px -12px rgba(0,0,0,0.08);
+      --shadow-gold: 0 18px 32px -12px rgba(201,160,85,0.2);
+      --focus-ring: 0 0 0 3px rgba(201,160,85,0.5);
+    }
+    [data-theme="light"] {
+      --bg: var(--cream-bg);
+      --bg-alt: var(--cream-warm);
+      --bg-card: var(--cream-card);
+      --tx: var(--stone);
+      --tx-mid: var(--stone-soft);
+      --tx-lo: var(--stone-muted);
+      --bdr: var(--border-light);
+      --bdr-g: var(--border-gold);
+      --nav: rgba(255,252,246,0.96);
+      --footer-bg: #F9F3E6;
+    }
+    [data-theme="dark"] {
+      --bg: #1A150E;
+      --bg-alt: #241F16;
+      --bg-card: #2C261C;
+      --tx: #F2E9DD;
+      --tx-mid: #D9CEBC;
+      --tx-lo: #A6947C;
+      --bdr: rgba(201,160,85,0.2);
+      --bdr-g: rgba(201,160,85,0.4);
+      --nav: rgba(26,21,14,0.94);
+      --footer-bg: #0F0C08;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--tx);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
+    }
+    /* accessibility: skip to content */
+    .skip-to-content {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--gold);
+      color: #2C2418;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 9999;
+      font-weight: 500;
+      transition: top 0.2s;
+    }
+    .skip-to-content:focus { top: 0; }
+    :focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+      border-radius: 4px;
+    }
+    /* scroll progress */
+    #spbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-light));
+      z-index: 400;
+      width: 0;
+    }
+    /* preloader */
+    #preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--cream-bg);
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+    }
+    .pre-logo { font-family: var(--serif); font-size: clamp(2rem,5vw,3.8rem); font-weight: 300; color: var(--stone); opacity: 0; }
+    .pre-logo span { color: var(--gold); }
+    .pre-line { width: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin-top: 1.5rem; }
+    .pre-bar { position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: linear-gradient(90deg, var(--gold-deep), var(--gold-light)); }
+    /* custom cursor (optional) */
+    .cur-dot { display: none; }
+    @media (pointer: fine) {
+      .cur-dot { display: block; position: fixed; width: 6px; height: 6px; background: var(--gold); border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 9997; }
+      .cur-ring { position: fixed; width: 42px; height: 42px; border: 1px solid rgba(201,160,85,0.65); border-radius: 50%; transform: translate(-50%,-50%); pointer-events: none; z-index: 9996; transition: width 0.2s, height 0.2s; }
+      .cur-ring.big { width: 72px; height: 72px; background: rgba(201,160,85,0.05); }
+    }
+    /* scarcity bar */
+    .scarcity-bar {
+      background: linear-gradient(90deg, rgba(201,160,85,0.08), rgba(201,160,85,0.02));
+      border-bottom: 1px solid var(--bdr-g);
+      text-align: center;
+      padding: 10px 20px;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+    }
+    /* navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 500;
+      padding: 1.2rem 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--nav);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bdr);
+    }
+    .nav-logo { font-family: var(--serif); font-size: 1.35rem; font-weight: 400; color: var(--tx); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .ndot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a { font-size: 0.7rem; text-decoration: none; color: var(--tx-lo); letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a:focus { color: var(--gold); }
+    .nav-r { display: flex; align-items: center; gap: 16px; }
+    .tog {
+      width: 44px; height: 24px; border: 1px solid var(--bdr-g); border-radius: 40px;
+      background: transparent; cursor: pointer; position: relative;
+    }
+    .tog-thumb { position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; background: var(--gold); border-radius: 50%; transition: transform 0.35s; }
+    [data-theme="dark"] .tog-thumb { transform: translateX(20px); }
+    .nav-cta {
+      font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase;
+      color: #2C2418; background: var(--gold); padding: 0.5rem 1.3rem;
+      text-decoration: none; border-radius: 60px; font-weight: 500; transition: all 0.2s;
+    }
+    .nav-cta:hover, .nav-cta:focus { background: var(--gold-light); transform: translateY(-2px); }
+    /* hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 5% 6rem;
+      position: relative;
+      background: var(--bg-card);
+    }
+    .orb { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.2; animation: drift 18s infinite alternate; }
+    .orb1 { width: 50vw; height: 50vw; background: radial-gradient(circle, var(--gold), transparent 70%); top: -15%; left: -8%; }
+    .orb2 { width: 35vw; height: 35vw; background: radial-gradient(circle, var(--gold-light), transparent 70%); bottom: -10%; right: -5%; }
+    @keyframes drift { to { transform: translate(3%, 5%) scale(1.08); } }
+    .hero-eyebrow { font-size: 0.66rem; letter-spacing: 0.28em; color: var(--gold); display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .hero-eyebrow-line { width: 40px; height: 1px; background: var(--gold); }
+    .hero-h1 { font-family: var(--serif); font-size: clamp(3rem, 10vw, 8rem); font-weight: 300; line-height: 0.92; color: var(--tx); }
+    .hero-h1 em { font-style: italic; color: var(--gold); }
+    .hero-timeline { display: inline-flex; align-items: center; gap: 10px; margin-top: 2rem; font-size: 0.8rem; color: var(--gold-deep); }
+    .tl-dot { width: 7px; height: 7px; background: var(--gold); border-radius: 50%; animation: pulse 1.8s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 0.4; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.3); } }
+    .hero-ctas { display: flex; gap: 1rem; margin-top: 2.5rem; flex-wrap: wrap; }
+    .hero-btn-primary, .hero-btn-secondary {
+      padding: 0.9rem 1.8rem; font-size: 0.75rem; letter-spacing: 0.15em;
+      text-decoration: none; font-weight: 500; transition: all 0.2s; display: inline-block;
+    }
+    .hero-btn-primary { background: var(--gold); color: #2C2418; }
+    .hero-btn-primary:hover, .hero-btn-primary:focus { background: var(--gold-light); transform: translateY(-2px); }
+    .hero-btn-secondary { border: 1px solid var(--bdr-g); color: var(--tx); background: transparent; }
+    .hero-btn-secondary:hover, .hero-btn-secondary:focus { border-color: var(--gold); color: var(--gold); }
+    .hero-sub { font-size: 0.9rem; color: var(--tx-lo); max-width: 380px; line-height: 1.7; margin-top: 2rem; }
+    /* marquee */
+    .marquee-wrap { padding: 0.8rem 0; border-top: 1px solid var(--bdr); border-bottom: 1px solid var(--bdr); overflow: hidden; }
+    .marquee-track { display: inline-flex; animation: marquee 35s linear infinite; }
+    .marquee-item { font-family: var(--serif); font-size: 1rem; color: var(--tx-lo); padding: 0 2rem; white-space: nowrap; }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+    /* shared */
+    .s-label { font-size: 0.65rem; letter-spacing: 0.28em; color: var(--gold); display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+    .s-label::before { content: ''; width: 32px; height: 1px; background: var(--gold); }
+    .s-title { font-family: var(--serif); font-size: clamp(2.2rem, 5vw, 4.5rem); font-weight: 300; line-height: 1.05; }
+    .s-title em { color: var(--gold); font-style: italic; }
+    .anim-block { opacity: 0; transform: translateY(32px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .anim-block.revealed { opacity: 1; transform: translateY(0); }
+    /* templates grid */
+    .templates-section { padding: 6rem 5%; }
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+    .template-card {
+      background: var(--bg-card);
+      border-radius: 28px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid var(--bdr);
+      text-decoration: none;
+      display: block;
+    }
+    .template-card:focus-visible { box-shadow: var(--focus-ring); }
+    .template-card:hover { transform: translateY(-6px); border-color: var(--gold); box-shadow: var(--shadow-gold); }
+    .template-media {
+      height: 240px;
+      background: linear-gradient(145deg, #FCF6E8, #FBF1E0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .template-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: var(--gold);
+      color: #2C2418;
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 60px;
+      letter-spacing: 0.1em;
+    }
+    .template-info { padding: 1.5rem; }
+    .template-category { font-size: 0.6rem; letter-spacing: 0.2em; color: var(--gold-deep); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .template-name { font-family: var(--serif); font-size: 1.6rem; font-weight: 400; color: var(--tx); }
+    .template-desc { font-size: 0.8rem; color: var(--tx-lo); margin: 0.6rem 0 1rem; line-height: 1.5; }
+    .template-meta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--bdr); padding-top: 1rem; margin-top: 0.5rem; }
+    .template-price { font-weight: 600; color: var(--gold); font-size: 1rem; }
+    .template-link { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold); text-transform: uppercase; }
+    /* pricing */
+    .pricing-section { padding: 6rem 5%; background: var(--bg-alt); }
+    .pgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+    .pc { background: var(--bg-card); padding: 2rem; border-radius: 24px; border: 1px solid var(--bdr); transition: all 0.2s; }
+    .pc-price { font-family: var(--serif); font-size: 2.5rem; color: var(--gold); margin: 0.5rem 0; }
+    .bwa {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      background: #25D366; color: white; text-decoration: none; padding: 10px 16px;
+      border-radius: 40px; font-weight: 500; font-size: 0.75rem; width: 100%; margin-top: 1.2rem;
+      transition: background 0.2s;
+    }
+    .bwa:focus-visible { box-shadow: var(--focus-ring); }
+    /* contact form */
+    .contact-section { padding: 6rem 5%; background: var(--bg-alt); }
+    .contact-inner { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; }
+    .cf { background: var(--bg-card); border-radius: 32px; padding: 2rem; border: 1px solid var(--bdr); }
+    .cf-row { margin-bottom: 1.2rem; }
+    .cf-row label { display: block; font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold-deep); margin-bottom: 0.4rem; font-weight: 500; }
+    .cf-row input, .cf-row select, .cf-row textarea {
+      width: 100%; background: transparent; border: 1px solid var(--bdr); border-radius: 12px;
+      padding: 12px; color: var(--tx); font-family: var(--sans); font-size: 0.85rem;
+      transition: border 0.2s;
+    }
+    .cf-row input:focus, .cf-row select:focus, .cf-row textarea:focus {
+      outline: none; border-color: var(--gold); box-shadow: var(--focus-ring);
+    }
+    .cf-submit {
+      background: var(--gold); color: #2C2418; border: none; padding: 12px;
+      width: 100%; border-radius: 40px; font-weight: 600; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .cf-submit:hover, .cf-submit:focus { background: var(--gold-light); }
+    /* ----- IMPROVED BOTTOM (FOOTER + BACK TO TOP) ----- */
+    .back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--gold);
+      color: #2C2418;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-sm);
+      z-index: 500;
+      transition: all 0.2s;
+      opacity: 0;
+      visibility: hidden;
+    }
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    .back-to-top:hover, .back-to-top:focus {
+      background: var(--gold-light);
+      transform: translateY(-4px);
+    }
+    footer {
+      background: var(--footer-bg);
+      border-top: 1px solid var(--bdr);
+      padding: 3rem 5% 2rem;
+      margin-top: 2rem;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .footer-col h4 {
+      font-family: var(--serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 1.2rem;
+      color: var(--gold);
+    }
+    .footer-col p, .footer-col a {
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--tx-lo);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col a:hover, .footer-col a:focus {
+      color: var(--gold);
+    }
+    .footer-col ul {
+      list-style: none;
+    }
+    .footer-col li {
+      margin-bottom: 0.6rem;
+    }
+    .social-icons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--bdr-g);
+      border-radius: 50%;
+      transition: all 0.2s;
+    }
+    .social-icons a:hover {
+      border-color: var(--gold);
+      background: rgba(201,160,85,0.1);
+    }
+    .footer-bottom {
+      border-top: 1px solid var(--bdr);
+      padding-top: 1.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.7rem;
+      color: var(--tx-lo);
+    }
+    @media (max-width: 800px) {
+      .nav-links { display: none; }
+      .contact-inner { grid-template-columns: 1fr; }
+      .hero { padding-bottom: 3rem; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .back-to-top { bottom: 1.2rem; right: 1.2rem; }
+    }
+    @media (max-width: 480px) {
+      .hero-ctas { flex-direction: column; }
+      .hero-btn-primary, .hero-btn-secondary { text-align: center; }
+    }
+    .reveal { transition: opacity 0.7s, transform 0.7s; }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-to-content">Skip to main content</a>
+  <div id="spbar"></div>
+  <div id="preloader"><div class="pre-logo">Frame<span>memora</span></div><div class="pre-line"></div><div class="pre-bar"></div></div>
+  <div class="cur-dot" id="curDot"></div><div class="cur-ring" id="curRing"></div>
+
+  <div class="scarcity-bar" role="note">✨ LIMITED AVAILABILITY — Only <strong>3 slots</strong> this month for cream & gold priority delivery</div>
+
+  <nav aria-label="Main navigation">
+    <a href="#" class="nav-logo" aria-label="Framememora home"><span class="ndot"></span>Framememora</a>
+    <ul class="nav-links">
+      <li><a href="#work">Templates</a></li><li><a href="#services">Services</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-r">
+      <button class="tog" id="themeToggle" aria-label="Switch dark/light mode"><div class="tog-thumb"></div></button>
+      <a href="https://wa.me/919995878853?text=Hi%20Framememora!%20I%27d%20like%20to%20enquire%20about%20a%20website" class="nav-cta" target="_blank" rel="noopener">Start your story</a>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section class="hero">
+      <div class="orb orb1"></div><div class="orb orb2"></div>
+      <div class="hero-content">
+        <div class="hero-eyebrow"><div class="hero-eyebrow-line"></div><span>Wedding & Event Websites · Kerala</span></div>
+        <h1 class="hero-h1">Frame your<br><em>memory</em> forever.</h1>
+        <div class="hero-timeline"><div class="tl-dot"></div>Your site goes live in 3 days — zero effort from you</div>
+        <div class="hero-ctas">
+          <a href="#pricing" class="hero-btn-primary">View packages →</a>
+          <a href="#work" class="hero-btn-secondary">Explore templates</a>
+        </div>
+        <p class="hero-sub">Bespoke digital homes for weddings & celebrations — crafted in cream & gold, hosted forever.</p>
+      </div>
+    </section>
+
+    <div class="marquee-wrap" aria-hidden="true"><div class="marquee-track"><span class="marquee-item">Wedding Websites ✦</span><span class="marquee-item">Birthdays ✦</span><span class="marquee-item">Corporate ✦</span><span class="marquee-item">Anniversary ✦</span><span class="marquee-item">RSVP ✦</span><span class="marquee-item">Photo Galleries ✦</span><span class="marquee-item">Cream & Gold ✦</span></div></div>
+
+    <!-- TEMPLATES -->
+    <section class="templates-section" id="work">
+      <div class="anim-block"><div class="s-label">Our Signature Collection</div><h2 class="s-title">Redesigned templates,<br/><em>crafted in cream & gold</em></h2></div>
+      <div class="template-grid">
+        <a class="template-card" href="https://boardme.framememora.com/" target="_blank" rel="noopener">
+          <div class="template-media"><div class="template-badge">Template 01</div><svg width="80" height="80" viewBox="0 0 100 100"><circle cx="50" cy="50" r="28" stroke="#C9A055" stroke-width="1.2" fill="none"/><path d="M50 22 L54 38 L70 38 L58 48 L62 64 L50 54 L38 64 L42 48 L30 38 L46 38 Z" fill="#C9A055" opacity="0.6"/></svg></div>
+          <div class="template-info"><div class="template-category">Wedding · Classic</div><div class="template-name">Ivory Bloom</div><div class="template-desc">Warm ivory & champagne gold, elegant florals, timeless.</div><div class="template-meta"><span class="template-price">₹4,999</span><span class="template-link">Preview →</span></div></div>
+        </a>
+        <a class="template-card" href="http://template-chen.framememora.com/" target="_blank" rel="noopener">
+          <div class="template-media"><div class="template-badge">Template 02</div><svg width="80" height="80" viewBox="0 0 100 100"><rect x="25" y="25" width="50" height="50" rx="8" stroke="#C9A055" fill="none"/><path d="M35 45 L45 55 L65 35" stroke="#D4AF37" stroke-width="1.5"/></svg></div>
+          <div class="template-info"><div class="template-category">Wedding · Evening</div><div class="template-name">Midnight Garden</div><div class="template-desc">Deep moody base with radiant gold accents.</div><div class="template-meta"><span class="template-price">₹4,999</span><span class="template-link">Preview →</span></div></div>
+        </a>
+        <a class="template-card" href="https://eleanor.framememora.com/" target="_blank" rel="noopener">
+          <div class="template-media"><div class="template-badge">Template 03</div><svg width="80" height="80" viewBox="0 0 100 100"><path d="M50 20 L58 40 L78 44 L64 58 L70 78 L50 66 L30 78 L36 58 L22 44 L42 40 Z" stroke="#C9A055" fill="none"/><circle cx="50" cy="50" r="4" fill="#C9A055"/></svg></div>
+          <div class="template-info"><div class="template-category">Anniversary · Intimate</div><div class="template-name">Rose & Dusk</div><div class="template-desc">Blush cream & dusty gold, poetic layout.</div><div class="template-meta"><span class="template-price">₹4,999</span><span class="template-link">Preview →</span></div></div>
+        </a>
+        <a class="template-card" href="https://voku.framememora.com/" target="_blank" rel="noopener">
+          <div class="template-media"><div class="template-badge">Template 04</div><svg width="80" height="80" viewBox="0 0 100 100"><path d="M30,50 L70,50 M50,30 L50,70" stroke="#C9A055" stroke-width="1.2"/><rect x="40" y="40" width="20" height="20" stroke="#D4AF37" fill="none"/></svg></div>
+          <div class="template-info"><div class="template-category">Birthday · Milestones</div><div class="template-name">Garden Sage</div><div class="template-desc">Earthy cream, sage & gold accents, fresh modern feel.</div><div class="template-meta"><span class="template-price">₹4,999</span><span class="template-link">Preview →</span></div></div>
+        </a>
+      </div>
+      <div style="text-align:center; margin-top: 2rem;"><a href="#contact" class="hero-btn-primary">✨ Request a custom template</a></div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="pricing-section" id="services">
+      <div class="anim-block"><div class="s-label">What We Build</div><h2 class="s-title">Every celebration<br/>deserves a <em>home</em></h2></div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 2rem; margin-top: 2rem;">
+        <div><h3 style="font-family:var(--serif); font-size:1.6rem;">Wedding Websites</h3><p>Countdowns, RSVP, gallery — all in cream & gold.</p></div>
+        <div><h3 style="font-family:var(--serif); font-size:1.6rem;">Corporate Events</h3><p>Polished registration, agenda, live updates.</p></div>
+        <div><h3 style="font-family:var(--serif); font-size:1.6rem;">Birthday & Milestones</h3><p>Personalised pages, surprise reveals, guest walls.</p></div>
+        <div><h3 style="font-family:var(--serif); font-size:1.6rem;">Post-Event Gallery</h3><p>Permanent digital heirloom with photos & memories.</p></div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="pricing-section" id="pricing">
+      <div class="anim-block"><div class="s-label">Transparent Pricing</div><h2 class="s-title">Know exactly<br/><em>what you're getting</em></h2><p class="p-intro">No hidden fees. Pick your package, we start within hours.</p></div>
+      <div class="pgrid">
+        <div class="pc"><h3 class="template-category">Template</h3><div class="pc-price">₹4,999</div><ul style="margin:1rem 0; list-style:none;"><li>✦ Premium template personalisation</li><li>✦ RSVP + gallery</li><li>✦ Live in 48h</li></ul><a href="https://wa.me/919995878853?text=Template%20package%20₹4,999" class="bwa" target="_blank">Start →</a></div>
+        <div class="pc"><h3 class="template-category">Custom</h3><div class="pc-price">₹9,999</div><ul style="margin:1rem 0; list-style:none;"><li>✦ Design from scratch</li><li>✦ Unique layout & story</li><li>✦ 5 days delivery</li></ul><a href="https://wa.me/919995878853?text=Custom%20package%20₹9,999" class="bwa" target="_blank">Start →</a></div>
+        <div class="pc"><h3 class="template-category">Premium</h3><div class="pc-price">₹14,999</div><ul style="margin:1rem 0; list-style:none;"><li>✦ Full custom + unlimited gallery</li><li>✦ 1 year hosting + wish wall</li><li>✦ Priority in 3 days</li></ul><a href="https://wa.me/919995878853?text=Premium%20package%20₹14,999" class="bwa" target="_blank">Claim slot →</a></div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="contact-section" id="contact">
+      <div class="contact-inner">
+        <div><div class="s-label">Get In Touch</div><h2 class="s-title">Tell us about<br/><em>your event</em></h2><p class="contact-body">We'll reply within 24 hours. Let's shape your digital memory together.</p></div>
+        <div class="cf">
+          <form id="contactForm" action="#" method="post">
+            <div class="cf-row"><label for="cfName">Your name *</label><input type="text" id="cfName" name="name" required aria-required="true"></div>
+            <div class="cf-row"><label for="cfEmail">Email address *</label><input type="email" id="cfEmail" name="email" required aria-required="true"></div>
+            <div class="cf-row"><label for="cfType">Event type *</label><select id="cfType" required><option value="">Select</option><option>Wedding</option><option>Engagement</option><option>Birthday</option><option>Corporate</option></select></div>
+            <div class="cf-row"><label for="cfMsg">Your vision</label><textarea id="cfMsg" rows="3"></textarea></div>
+            <button type="button" class="cf-submit" id="submitBtn">Send enquiry →</button>
+            <div id="formFeedback" style="margin-top:1rem; font-size:0.8rem;"></div>
+          </form>
+          <div id="cfSuccess" style="display:none; text-align:center; padding:1rem;">✨ Thank you! We'll be in touch within 24 hours.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- IMPROVED FOOTER (rich content, social icons, newsletter teaser) -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h4>Framememora</h4>
+        <p>Crafting digital heirlooms for weddings and celebrations. Cream & gold elegance, delivered with love from Kerala, India.</p>
+        <div class="social-icons">
+          <a href="#" aria-label="Instagram (coming soon)" style="opacity:0.7;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="#" aria-label="Facebook (coming soon)" style="opacity:0.7;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>
+          <a href="https://wa.me/919995878853" target="_blank" aria-label="WhatsApp"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="#work">Templates</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="https://wa.me/919995878853" target="_blank">WhatsApp: +91 99958 78853</a></li>
+          <li><a href="mailto:framememora.official@gmail.com">framememora.official@gmail.com</a></li>
+          <li>Kerala, India</li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Newsletter</h4>
+        <p>Be the first to know about new templates & offers.</p>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.8rem;">
+          <input type="email" placeholder="Your email" style="background:transparent; border:1px solid var(--bdr); border-radius: 40px; padding: 8px 12px; font-size:0.7rem; width:100%; color:var(--tx);">
+          <button style="background:var(--gold); border:none; border-radius:40px; padding:0 12px; font-size:0.7rem; font-weight:600; cursor:pointer;">→</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 Framememora — Cream & Gold Edition. All rights reserved.</span>
+      <span style="font-family: var(--serif); font-style: italic;">Frame your memory forever ✦</span>
+    </div>
+  </footer>
+
+  <!-- BACK TO TOP BUTTON -->
+  <a href="#" class="back-to-top" id="backToTop" aria-label="Back to top">↑</a>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+    (function(){
+      // theme
+      const html = document.documentElement;
+      const saved = localStorage.getItem('fm-theme') || 'light';
+      html.setAttribute('data-theme', saved);
+      document.getElementById('themeToggle').addEventListener('click', () => {
+        const cur = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', cur);
+        localStorage.setItem('fm-theme', cur);
+      });
+      // scroll progress
+      const spbar = document.getElementById('spbar');
+      window.addEventListener('scroll', () => {
+        const winScroll = window.scrollY;
+        const height = document.body.scrollHeight - window.innerHeight;
+        spbar.style.width = (winScroll / height) * 100 + '%';
+        // back to top visibility
+        const backBtn = document.getElementById('backToTop');
+        if (window.scrollY > 500) backBtn.classList.add('show');
+        else backBtn.classList.remove('show');
+      });
+      // preloader
+      const pre = document.getElementById('preloader');
+      const tl = gsap.timeline({ onComplete: () => { pre.style.display = 'none'; } });
+      tl.to('.pre-logo', { opacity: 1, duration: 0.9 })
+        .to('.pre-line', { width: '220px', duration: 0.7 }, '-=0.3')
+        .to('.pre-bar', { width: '100%', duration: 1 }, '-=0.2')
+        .to(pre, { yPercent: -100, duration: 0.9, ease: 'power3.inOut' });
+      // reveal animations
+      const reveals = document.querySelectorAll('.anim-block');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('revealed'); });
+      }, { threshold: 0.2 });
+      reveals.forEach(el => observer.observe(el));
+      // custom cursor (fine pointer only)
+      if (window.matchMedia('(pointer: fine)').matches) {
+        const cd = document.getElementById('curDot'), cr = document.getElementById('curRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY; if(cd) cd.style.transform = `translate(${mx}px, ${my}px)`; });
+        function animateRing() { rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12; if(cr) cr.style.transform = `translate(${rx}px, ${ry}px)`; requestAnimationFrame(animateRing); }
+        animateRing();
+        const interactive = document.querySelectorAll('a, button, .template-card, .hero-btn-primary, .bwa');
+        interactive.forEach(el => { el.addEventListener('mouseenter', () => cr?.classList.add('big')); el.addEventListener('mouseleave', () => cr?.classList.remove('big')); });
+      }
+      // form handler
+      const submitBtn = document.getElementById('submitBtn');
+      const form = document.getElementById('contactForm');
+      const successDiv = document.getElementById('cfSuccess');
+      const feedbackDiv = document.getElementById('formFeedback');
+      submitBtn.addEventListener('click', () => {
+        const name = document.getElementById('cfName').value.trim();
+        const email = document.getElementById('cfEmail').value.trim();
+        const type = document.getElementById('cfType').value;
+        if (!name || !email || !type) {
+          feedbackDiv.textContent = 'Please fill in your name, email, and event type.';
+          feedbackDiv.style.color = '#B85C6E';
+          return;
+        }
+        const msg = document.getElementById('cfMsg').value.trim();
+        const text = `Hi Framememora!%0AEnquiry%0AName: ${name}%0AEmail: ${email}%0AEvent: ${type}%0AMessage: ${msg || 'Not specified'}`;
+        window.open(`https://wa.me/919995878853?text=${text}`, '_blank');
+        form.style.display = 'none';
+        successDiv.style.display = 'block';
+        feedbackDiv.textContent = '';
+      });
+      // smooth back to top
+      document.getElementById('backToTop').addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
+</body>
+</html>
